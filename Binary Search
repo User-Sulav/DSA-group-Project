@@ -1,0 +1,66 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <cstdlib>
+#include <ctime>
+#include <chrono>
+using namespace std;
+using namespace std::chrono;
+
+// Binary Search Function
+int binarySearch(const vector<int>& arr, int x) {
+    int left = 0, right = arr.size() - 1;
+
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+
+        if (arr[mid] == x)
+            return mid;
+        else if (arr[mid] < x)
+            left = mid + 1;
+        else
+            right = mid - 1;
+    }
+
+    return -1; // Not found
+}
+
+int main() {
+    int N, target;
+
+    cout << "Enter number of elements (N): ";
+    cin >> N;
+
+    vector<int> arr(N);
+    srand(time(0));
+
+    for (int i = 0; i < N; ++i) {
+        arr[i] = rand() % 10000;
+    }
+
+    sort(arr.begin(), arr.end());
+
+    cout << "Sorted Array:\n";
+    for (int num : arr) cout << num << " ";
+    cout << "\n\nEnter element to search: ";
+    cin >> target;
+
+    // Measure time for binary search
+    auto start = high_resolution_clock::now();
+    int index = binarySearch(arr, target);
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(stop - start); // you can also use milliseconds
+
+    if (index != -1)
+        cout << "Element " << target << " found at index " << index << ".\n";
+    else
+        cout << "Element " << target << " not found.\n";
+
+    cout << "Binary Search Runtime: " << duration.count() << " microseconds\n";
+
+    // Time Complexity Note
+    cout << "\nTheoretical Time Complexity of Binary Search:\n";
+    cout << "Best Case: O(1)\nAverage Case: O(log N)\nWorst Case: O(log N)\n";
+
+    return 0;
+}
