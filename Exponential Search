@@ -1,0 +1,74 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <cstdlib>
+#include <ctime>
+#include <chrono>
+using namespace std;
+using namespace std::chrono;
+
+// Binary Search used inside Exponential Search
+int binarySearch(const vector<int>& arr, int left, int right, int x) {
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+
+        if (arr[mid] == x)
+            return mid;
+        else if (arr[mid] < x)
+            left = mid + 1;
+        else
+            right = mid - 1;
+    }
+    return -1;
+}
+
+// Exponential Search
+int exponentialSearch(const vector<int>& arr, int x) {
+    if (arr.empty()) return -1;
+    if (arr[0] == x) return 0;
+
+    int i = 1;
+    while (i < arr.size() && arr[i] <= x)
+        i *= 2;
+
+    return binarySearch(arr, i / 2, min(i, (int)arr.size() - 1), x);
+}
+
+int main() {
+    int N, target;
+
+    cout << "Enter number of elements (N): ";
+    cin >> N;
+
+    vector<int> arr(N);
+    srand(time(0));
+
+    for (int i = 0; i < N; ++i)
+        arr[i] = rand() % 10000;
+
+    sort(arr.begin(), arr.end());
+
+    cout << "Sorted Array:\n";
+    for (int num : arr) cout << num << " ";
+    cout << "\n\nEnter element to search: ";
+    cin >> target;
+
+    // Measure time
+    auto start = high_resolution_clock::now();
+    int index = exponentialSearch(arr, target);
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(stop - start);
+
+    if (index != -1)
+        cout << "Element " << target << " found at index " << index << ".\n";
+    else
+        cout << "Element " << target << " not found.\n";
+
+    cout << "Exponential Search Runtime: " << duration.count() << " microseconds\n";
+
+    // Theoretical Time Complexity
+    cout << "\nTheoretical Time Complexity of Exponential Search:\n";
+    cout << "Best Case: O(1)\nAverage Case: O(log i)\nWorst Case: O(log i), where i is the position or search bound.\n";
+
+    return 0;
+}
