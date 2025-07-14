@@ -1,0 +1,74 @@
+#include <iostream>
+#include <vector>
+#include <cstdlib>
+#include <ctime>
+#include <chrono>
+using namespace std;
+using namespace std::chrono;
+
+// Partition function used in Quick Sort
+int partition(vector<int>& arr, int low, int high) {
+    int pivot = arr[high]; // choosing last element as pivot
+    int i = low - 1;
+
+    for (int j = low; j < high; j++) {
+        if (arr[j] < pivot) {
+            i++;
+            swap(arr[i], arr[j]);
+        }
+    }
+
+    swap(arr[i + 1], arr[high]);
+    return i + 1;
+}
+
+// Quick Sort algorithm
+void quickSort(vector<int>& arr, int low, int high) {
+    if (low < high) {
+        int pi = partition(arr, low, high);
+
+        quickSort(arr, low, pi - 1);  // sort left part
+        quickSort(arr, pi + 1, high); // sort right part
+    }
+}
+
+// Display array
+void printArray(const vector<int>& arr) {
+    for (int num : arr)
+        cout << num << " ";
+    cout << endl;
+}
+
+int main() {
+    int N;
+
+    cout << "Enter number of elements (N): ";
+    cin >> N;
+
+    vector<int> arr(N);
+    srand(time(0));
+
+    for (int i = 0; i < N; ++i)
+        arr[i] = rand() % 10000;
+
+    cout << "Unsorted Array:\n";
+    printArray(arr);
+
+    // Time measurement
+    auto start = high_resolution_clock::now();
+    quickSort(arr, 0, N - 1);
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<milliseconds>(stop - start);
+
+    cout << "\nSorted Array using Quick Sort:\n";
+    printArray(arr);
+    cout << "Quick Sort Runtime: " << duration.count() << " milliseconds\n";
+
+    // Theoretical complexity info
+    cout << "\nTheoretical Time Complexity of Quick Sort:\n";
+    cout << "Best Case: O(N log N)\n";
+    cout << "Average Case: O(N log N)\n";
+    cout << "Worst Case: O(N^2)\n";
+
+    return 0;
+}
