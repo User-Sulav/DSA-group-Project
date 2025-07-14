@@ -1,0 +1,74 @@
+#include <iostream>
+#include <vector>
+#include <cstdlib>
+#include <ctime>
+#include <chrono>
+using namespace std;
+using namespace std::chrono;
+
+// Merge two halves
+void merge(vector<int>& arr, int left, int mid, int right) {
+    int n1 = mid - left + 1;
+    int n2 = right - mid;
+
+    vector<int> L(n1), R(n2);
+    for (int i = 0; i < n1; ++i) L[i] = arr[left + i];
+    for (int j = 0; j < n2; ++j) R[j] = arr[mid + 1 + j];
+
+    int i = 0, j = 0, k = left;
+
+    while (i < n1 && j < n2)
+        arr[k++] = (L[i] <= R[j]) ? L[i++] : R[j++];
+
+    while (i < n1) arr[k++] = L[i++];
+    while (j < n2) arr[k++] = R[j++];
+}
+
+// Merge Sort
+void mergeSort(vector<int>& arr, int left, int right) {
+    if (left < right) {
+        int mid = left + (right - left) / 2;
+
+        mergeSort(arr, left, mid);      // Sort left half
+        mergeSort(arr, mid + 1, right); // Sort right half
+        merge(arr, left, mid, right);   // Merge sorted halves
+    }
+}
+
+// Display array
+void printArray(const vector<int>& arr) {
+    for (int num : arr)
+        cout << num << " ";
+    cout << endl;
+}
+
+int main() {
+    int N;
+    cout << "Enter number of elements (N): ";
+    cin >> N;
+
+    vector<int> arr(N);
+    srand(time(0));
+    for (int i = 0; i < N; ++i)
+        arr[i] = rand() % 10000;
+
+    cout << "Unsorted Array:\n";
+    printArray(arr);
+
+    // Measure time
+    auto start = high_resolution_clock::now();
+    mergeSort(arr, 0, N - 1);
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<milliseconds>(stop - start);
+
+    cout << "\nSorted Array using Merge Sort:\n";
+    printArray(arr);
+    cout << "Merge Sort Runtime: " << duration.count() << " milliseconds\n";
+
+    cout << "\nTheoretical Time Complexity of Merge Sort:\n";
+    cout << "Best Case: O(N log N)\n";
+    cout << "Average Case: O(N log N)\n";
+    cout << "Worst Case: O(N log N)\n";
+
+    return 0;
+}
